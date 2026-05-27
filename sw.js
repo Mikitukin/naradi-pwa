@@ -1,17 +1,46 @@
-// Service Worker pro Nářadí App PWA
-// Minimální implementace pro PWA install prompt
-
-const CACHE_NAME = 'naradi-v1';
+const CACHE_NAME = 'naradi-v2';
+const PRECACHE = [
+  './',
+  './index.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png',
+  './logo-web.png',
+];
 
 self.addEventListener('install', (event) => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(PRECACHE))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
-  event.waitUntil(clients.claim());
+  event.waitUntil(
+    caches.keys().then((keys) =>
+      Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
+    )
+  );
+  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
-  // Pass through all requests (no offline caching for now)
-  event.respondWith(fetch(event.request));
+  const url = new URL(event.request.url);
+
+  // API calls — always network
+  if (url.hostname.includes('script.google.com')) {
+    event.respondWith(fetch(event.request));
+    return;
+  }
+
+  // App shell — network first, fallback to cache
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
 });
