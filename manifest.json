@@ -1,7 +1,7 @@
 {
   "name": "Nářadí — Fér Řemeslníci",
   "short_name": "Nářadí",
-  "start_url": "https://script.google.com/macros/s/AKfycbwIxOcMlw6IaMDGVHFrv9S5G5o1GL64WxfIHoipJrO3AQLxXp5R1WQvDVTwzTFOWvMp/exec",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#f7f8fb",
   "theme_color": "#4a9de0",

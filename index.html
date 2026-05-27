@@ -1,0 +1,2161 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#f7f8fb">
+<title>Nářadí App — Fér Řemeslníci</title>
+<link rel="manifest" href="data:application/json;base64,eyJuYW1lIjoiTsOhxZlhZMOtIEFwcCIsInNob3J0X25hbWUiOiJOw6HFmWFkw60iLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2Y3ZjhmYiIsInRoZW1lX2NvbG9yIjoiIzRhOWRlMCJ9">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Fér Řemeslníci brand colors */
+  --brand-blue: #4a9de0;
+  --brand-blue-dark: #3a87c9;
+  --brand-blue-light: #e8f2fc;
+  --brand-gray: #4a5568;
+  --brand-gray-dark: #2d3748;
+  --brand-gray-light: #718096;
+  
+  /* Light theme */
+  --bg: #f7f8fb;
+  --bg2: #ffffff;
+  --surface: #ffffff;
+  --surface2: #f0f2f7;
+  --surface3: #e8ebf2;
+  --border: #dfe3ed;
+  --border2: #c9cfdd;
+  --text: #2d3748;
+  --text2: #6b7a94;
+  --text3: #9aa5b8;
+  --amber: #4a9de0;
+  --amber-dim: rgba(74,157,224,0.10);
+  --amber-glow: rgba(74,157,224,0.25);
+  --blue: #4a9de0;
+  --blue-dim: rgba(74,157,224,0.10);
+  --green: #38a169;
+  --green-dim: rgba(56,161,105,0.10);
+  --red: #e53e3e;
+  --red-dim: rgba(229,62,62,0.08);
+  --purple: #805ad5;
+  --purple-dim: rgba(128,90,213,0.10);
+  --radius: 14px;
+  --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-height: 68px;
+}
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  padding-top: var(--safe-top);
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 12px);
+}
+
+/* ===== TOP BAR ===== */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 6px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.topbar-title {
+  font-weight: 700; font-size: 1.15rem;
+  display: flex; align-items: center; gap: 8px;
+  flex-shrink: 1; min-width: 0;
+}
+.topbar-title .icon { font-size: 1.3rem; }
+.topbar-title img { height: 36px !important; }
+.topbar-user {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 5px 10px 5px 8px; border-radius: 99px;
+  font-size: 0.75rem; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all 0.2s;
+  flex-shrink: 0; white-space: nowrap;
+}
+.topbar-user:hover { border-color: var(--brand-blue); color: var(--text); }
+.topbar-user .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--green);
+}
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: stretch;
+  padding-bottom: var(--safe-bottom);
+  height: calc(var(--nav-height) + var(--safe-bottom));
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.04);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 3px; padding: 8px 4px;
+  color: var(--text3); font-size: 0.65rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+  border: none; background: none; text-decoration: none;
+  position: relative;
+}
+.nav-item.active { color: var(--brand-blue); }
+.nav-item.active::after {
+  content: ''; position: absolute; top: 0; left: 25%; right: 25%;
+  height: 2px; background: var(--brand-blue); border-radius: 0 0 4px 4px;
+}
+.nav-item svg { width: 22px; height: 22px; }
+.nav-item.scan-btn {
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-dark));
+  color: #fff; font-weight: 700; border-radius: 16px;
+  margin: 6px 4px; font-size: 0.7rem;
+  box-shadow: 0 4px 12px rgba(74,157,224,0.3);
+}
+.nav-item.scan-btn::after { display: none; }
+
+/* ===== PAGES ===== */
+.page { display: none; padding: 16px 16px 24px; animation: fadeUp 0.3s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  transition: border-color 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.card:hover { border-color: var(--border2); }
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.card-title { font-weight: 700; font-size: 0.95rem; }
+.card-subtitle { color: var(--text2); font-size: 0.8rem; margin-top: 2px; }
+
+/* ===== STATS ROW ===== */
+.stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.stat-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 16px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.stat-card::before {
+  content: ''; position: absolute; top: -10px; right: -10px;
+  width: 60px; height: 60px; border-radius: 50%;
+  filter: blur(30px); opacity: 0.15;
+}
+.stat-card.amber::before { background: var(--brand-blue); }
+.stat-card.blue::before { background: var(--brand-blue); }
+.stat-card.green::before { background: var(--green); }
+.stat-card.purple::before { background: var(--purple); }
+.stat-value { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+.stat-label { font-size: 0.72rem; color: var(--text2); font-weight: 500; margin-top: 2px; }
+
+/* ===== LOCATION LIST ===== */
+.loc-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid rgba(46,52,82,0.3);
+  cursor: pointer; transition: all 0.15s;
+}
+.loc-item:last-child { border-bottom: none; }
+.loc-item:active { transform: scale(0.98); }
+.loc-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; flex-shrink: 0;
+}
+.loc-icon.stavba { background: var(--brand-blue-light); }
+.loc-icon.sklad { background: #fef3e2; }
+.loc-icon.tranzit { background: #f3e8ff; }
+.loc-info { flex: 1; min-width: 0; }
+.loc-name { font-weight: 600; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.loc-meta { font-size: 0.75rem; color: var(--text2); }
+.loc-count {
+  font-weight: 700; font-size: 1rem; color: var(--brand-blue);
+  background: var(--brand-blue-light); padding: 4px 10px;
+  border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+}
+
+/* ===== SEARCH BAR ===== */
+.search-bar {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: var(--brand-blue); }
+.search-bar input {
+  flex: 1; background: none; border: none; outline: none;
+  color: var(--text); font-family: inherit; font-size: 0.9rem;
+}
+.search-bar input::placeholder { color: var(--text3); }
+.search-bar svg { width: 18px; height: 18px; color: var(--text3); flex-shrink: 0; }
+
+/* ===== TOOL ITEM ===== */
+.tool-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  margin-bottom: 6px; cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.tool-item:active { transform: scale(0.98); border-color: var(--brand-blue); }
+.tool-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 0.78rem; color: var(--brand-blue);
+  background: var(--brand-blue-light); padding: 4px 8px;
+  border-radius: 6px; min-width: 44px; text-align: center;
+  flex-shrink: 0; margin-top: 2px;
+}
+.tool-info { flex: 1; min-width: 0; }
+.tool-name { font-weight: 600; font-size: 0.82rem; line-height: 1.3; }
+.tool-meta { font-size: 0.7rem; color: var(--text2); margin-top: 2px; display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; }
+.tool-loc {
+  font-size: 0.65rem; font-weight: 600; padding: 2px 6px;
+  border-radius: 4px; white-space: nowrap;
+  background: var(--brand-blue-light); color: var(--brand-blue);
+}
+.tool-type-badge {
+  font-size: 0.62rem; font-weight: 600; padding: 2px 6px;
+  border-radius: 4px; background: #f0f2f7; color: var(--brand-gray);
+  white-space: nowrap;
+}
+
+/* ===== DETAIL OVERLAY ===== */
+.overlay {
+  display: none; position: fixed; inset: 0; z-index: 200;
+  background: rgba(0,0,0,0.3); backdrop-filter: blur(4px);
+  animation: fadeIn 0.2s;
+}
+.overlay.active { display: flex; align-items: flex-end; justify-content: center; }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+.detail-sheet {
+  background: #ffffff; border-radius: 20px 20px 0 0;
+  width: 100%; max-width: 500px; max-height: 90dvh;
+  overflow-y: auto; padding: 20px 20px calc(20px + var(--safe-bottom));
+  animation: slideUp 0.3s ease;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.1);
+}
+@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+.detail-handle {
+  width: 36px; height: 4px; background: var(--border);
+  border-radius: 99px; margin: 0 auto 16px;
+}
+.detail-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem; font-weight: 800; color: var(--brand-blue);
+  letter-spacing: -0.02em;
+}
+.detail-name { font-size: 1.15rem; font-weight: 700; margin: 4px 0 2px; }
+.detail-brand { color: var(--text2); font-size: 0.9rem; margin-bottom: 16px; }
+.detail-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;
+}
+.detail-cell {
+  background: var(--surface2); border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+.detail-cell-label { font-size: 0.68rem; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 2px; }
+.detail-cell-value { font-size: 0.88rem; font-weight: 600; }
+.detail-cell-value.loc { color: var(--brand-blue); }
+.detail-cell-value.price { color: var(--green); font-family: 'JetBrains Mono', monospace; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px; border-radius: 12px;
+  font-family: inherit; font-size: 0.9rem; font-weight: 600;
+  border: none; cursor: pointer; transition: all 0.15s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: linear-gradient(135deg, var(--brand-blue), var(--brand-blue-dark)); color: #fff; box-shadow: 0 2px 8px rgba(74,157,224,0.25); }
+.btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-danger { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.2); }
+.btn + .btn { margin-top: 8px; }
+
+/* ===== SCANNER ===== */
+.scanner-container {
+  position: relative; border-radius: var(--radius);
+  overflow: hidden; background: #000; margin-bottom: 16px;
+  aspect-ratio: 4/3;
+}
+#qr-reader { width: 100%; height: 100%; }
+#qr-reader video { width: 100% !important; height: 100% !important; object-fit: cover !important; border: none !important; }
+#qr-reader img[alt="Info icon"] { display: none !important; }
+#qr-reader__scan_region { min-height: unset !important; }
+#qr-reader__dashboard { display: none !important; }
+.scanner-frame {
+  position: absolute; inset: 0; z-index: 10; pointer-events: none;
+  display: flex; align-items: center; justify-content: center;
+}
+.scanner-frame-inner {
+  width: 65%; aspect-ratio: 1.8/1; border: 2px solid var(--brand-blue);
+  border-radius: 12px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.4);
+  position: relative;
+}
+.scanner-line {
+  position: absolute; left: 4px; right: 4px; top: 50%;
+  height: 2px; background: var(--brand-blue); border-radius: 2px;
+  animation: scanLine 2s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--amber-glow);
+}
+@keyframes scanLine { 0%,100%{top:15%} 50%{top:85%} }
+
+/* ===== TRANSFER FORM ===== */
+.transfer-select {
+  width: 100%; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: inherit; font-size: 0.9rem;
+  outline: none; cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238891b0' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+.transfer-select:focus { border-color: var(--brand-blue); }
+.transfer-select option { background: var(--surface); }
+.form-label { font-size: 0.78rem; font-weight: 600; color: var(--text2); margin-bottom: 6px; display: block; }
+.form-group { margin-bottom: 14px; }
+.form-input {
+  width: 100%; padding: 12px 14px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: inherit; font-size: 0.9rem; outline: none;
+}
+.form-input:focus { border-color: var(--brand-blue); }
+
+/* ===== BATCH TRANSFER ===== */
+.batch-list { margin-bottom: 14px; }
+.batch-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  margin-bottom: 6px;
+}
+.batch-item .tool-id { font-size: 0.75rem; padding: 4px 8px; min-width: 44px; }
+.batch-item .tool-name { font-size: 0.8rem; flex: 1; }
+.batch-remove {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--red-dim); color: var(--red);
+  border: none; cursor: pointer; font-size: 1rem;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ===== HISTORY ===== */
+.history-item {
+  display: flex; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid rgba(46,52,82,0.3);
+}
+.history-item:last-child { border-bottom: none; }
+.history-arrow {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; min-width: 28px; padding-top: 2px;
+}
+.history-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-gray); }
+.history-line { width: 2px; height: 20px; background: var(--border); }
+.history-dot2 { width: 8px; height: 8px; border-radius: 50%; background: var(--brand-blue); }
+.history-content { flex: 1; }
+.history-from { font-size: 0.8rem; font-weight: 600; }
+.history-to { font-size: 0.8rem; font-weight: 600; color: var(--brand-blue); margin-top: 4px; }
+.history-meta { font-size: 0.7rem; color: var(--text3); margin-top: 6px; }
+
+/* ===== LOADING / EMPTY STATES ===== */
+.loading {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 40px 20px; color: var(--text3);
+}
+.spinner {
+  width: 32px; height: 32px; border: 3px solid var(--border);
+  border-top-color: var(--brand-blue); border-radius: 50%;
+  animation: spin 0.8s linear infinite; margin-bottom: 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text3); }
+.empty-state .icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+  z-index: 999; padding: 12px 20px; border-radius: 12px;
+  font-size: 0.85rem; font-weight: 600; color: #fff;
+  background: var(--green); box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: toastIn 0.3s ease; display: none;
+  max-width: calc(100vw - 40px); text-align: center;
+}
+.toast.error { background: var(--red); color: #fff; }
+.toast.show { display: block; }
+@keyframes toastIn { from{opacity:0;transform:translateX(-50%) translateY(-20px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
+
+/* ===== LOGIN SCREEN ===== */
+.login-screen {
+  position: fixed; inset: 0; z-index: 500;
+  background: linear-gradient(180deg, #f7f8fb 0%, #e8f2fc 100%);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+.login-screen.hidden { display: none; }
+.login-logo { font-size: 3rem; margin-bottom: 8px; }
+.login-title { font-size: 1.5rem; font-weight: 800; margin-bottom: 4px; color: var(--brand-gray-dark); }
+.login-sub { color: var(--text2); font-size: 0.9rem; margin-bottom: 32px; }
+.pin-dots {
+  display: flex; gap: 12px; margin-bottom: 24px;
+}
+.pin-dot {
+  width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--border2); transition: all 0.2s;
+}
+.pin-dot.filled { background: var(--brand-blue); border-color: var(--brand-blue); }
+.pin-dot.error { background: var(--red); border-color: var(--red); }
+.pin-pad {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 10px; max-width: 280px; width: 100%;
+}
+.pin-key {
+  aspect-ratio: 1.4/1; border-radius: 14px;
+  background: #ffffff; border: 1px solid var(--border);
+  color: var(--brand-gray-dark); font-family: inherit;
+  font-size: 1.4rem; font-weight: 600;
+  cursor: pointer; transition: all 0.1s;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.pin-key:active { background: var(--surface2); transform: scale(0.95); }
+.pin-key.empty { visibility: hidden; }
+.pin-key.backspace { font-size: 1.1rem; color: var(--text2); }
+
+/* ===== SECTION HEADER ===== */
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; margin-top: 20px;
+}
+.section-title { font-weight: 700; font-size: 1rem; }
+.section-action {
+  font-size: 0.78rem; font-weight: 600; color: var(--brand-blue);
+  cursor: pointer; background: none; border: none;
+}
+
+/* ===== FILTER CHIPS ===== */
+.filter-chips {
+  display: flex; gap: 6px; overflow-x: auto; padding-bottom: 10px;
+  margin-bottom: 10px; scrollbar-width: none;
+}
+.filter-chips::-webkit-scrollbar { display: none; }
+.chip {
+  padding: 6px 14px; border-radius: 99px; font-size: 0.75rem;
+  font-weight: 600; white-space: nowrap; cursor: pointer;
+  border: 1px solid var(--border); background: var(--surface);
+  color: var(--text2); transition: all 0.2s;
+}
+.chip.active { background: var(--brand-blue-light); color: var(--brand-blue); border-color: rgba(74,157,224,0.3); }
+
+/* ===== VIEW TOGGLE ===== */
+.view-toggle {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text3); cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center;
+}
+.view-toggle.active { background: var(--brand-blue-light); color: var(--brand-blue); border-color: rgba(74,157,224,0.3); }
+
+/* ===== ACTIVE FILTER HIGHLIGHT ===== */
+.filter-active {
+  background: var(--brand-blue-light) !important;
+  border-color: var(--brand-blue) !important;
+  color: var(--brand-blue) !important;
+  font-weight: 600 !important;
+}
+
+/* ===== GRID VIEW ===== */
+.grid-view { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.grid-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 12px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+.grid-card:active { transform: scale(0.97); border-color: var(--brand-blue); }
+.grid-card-img {
+  width: 100%; aspect-ratio: 4/3; object-fit: cover;
+  border-radius: 8px; background: var(--surface2);
+  margin-bottom: 8px;
+}
+.grid-card-placeholder {
+  width: 100%; aspect-ratio: 4/3; border-radius: 8px;
+  background: var(--surface2); margin-bottom: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3); font-size: 1.5rem;
+}
+.grid-card-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700; font-size: 0.75rem; color: var(--brand-blue);
+  margin-bottom: 2px;
+}
+.grid-card-name { font-weight: 600; font-size: 0.8rem; line-height: 1.3; margin-bottom: 2px;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.grid-card-meta { font-size: 0.7rem; color: var(--text2); }
+.grid-card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; }
+.grid-card-loc {
+  font-size: 0.62rem; font-weight: 600; padding: 2px 6px;
+  border-radius: 4px; background: var(--brand-blue-light); color: var(--brand-blue);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80px;
+}
+.grid-card-price { font-size: 0.72rem; font-weight: 600; color: var(--green); font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-logo" style="font-size:0"><img src="logo-web.png" alt="Fér Řemeslníci" style="height:80px;object-fit:contain"></div>
+  <div class="login-sub" style="margin-top:12px">Evidence nářadí · Zadejte PIN</div>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+    <div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-pad" id="pinPad">
+    <button class="pin-key" data-val="1">1</button>
+    <button class="pin-key" data-val="2">2</button>
+    <button class="pin-key" data-val="3">3</button>
+    <button class="pin-key" data-val="4">4</button>
+    <button class="pin-key" data-val="5">5</button>
+    <button class="pin-key" data-val="6">6</button>
+    <button class="pin-key" data-val="7">7</button>
+    <button class="pin-key" data-val="8">8</button>
+    <button class="pin-key" data-val="9">9</button>
+    <button class="pin-key empty"></button>
+    <button class="pin-key" data-val="0">0</button>
+    <button class="pin-key backspace" data-val="back">⌫</button>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar" id="topbar" style="display:none">
+  <div class="topbar-title">
+    <img src="logo-web.png" alt="Fér Řemeslníci" style="height:60px;object-fit:contain">
+  </div>
+  <div class="topbar-user" id="topbarUser" onclick="showPage('settings')">
+    <span class="dot"></span>
+    <span id="topbarUserName">---</span>
+    <span id="topbarUserRole" style="font-size:0.6rem;color:var(--brand-blue);background:var(--brand-blue-light);padding:1px 5px;border-radius:4px;font-weight:600"></span>
+  </div>
+</div>
+
+<!-- ===== PAGE: DASHBOARD ===== -->
+<div class="page" id="page-dashboard">
+  <div class="stats-row" id="dashStats">
+    <div class="stat-card amber">
+      <div class="stat-value" id="statTotal">—</div>
+      <div class="stat-label">Celkem nářadí</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-value" id="statValue">—</div>
+      <div class="stat-label">Celková hodnota</div>
+    </div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Lokace</div>
+  </div>
+  <div class="card" id="lokaceList">
+    <div class="loading"><div class="spinner"></div>Načítám…</div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Poslední převody</div>
+    <button class="section-action" onclick="showPage('history')">Zobrazit vše →</button>
+  </div>
+  <div class="card" id="recentTransfers">
+    <div class="empty-state"><div class="icon">📋</div><div>Zatím žádné převody</div></div>
+  </div>
+</div>
+
+<!-- ===== PAGE: SCANNER ===== -->
+<div class="page" id="page-scanner">
+  <div class="section-header" style="margin-top:0">
+    <div class="section-title">📷 Skenovat kód</div>
+  </div>
+  <div class="scanner-container" id="scannerContainer">
+    <div id="qr-reader"></div>
+    <div class="scanner-frame">
+      <div class="scanner-frame-inner">
+        <div class="scanner-line"></div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Nebo zadej ID ručně</label>
+    <div style="display:flex;gap:8px">
+      <input type="number" class="form-input" id="manualId" placeholder="Např. 224" inputmode="numeric">
+      <button class="btn btn-primary" style="width:auto;padding:12px 20px" onclick="manualSearch()">🔍</button>
+    </div>
+  </div>
+  <div id="scanResult"></div>
+</div>
+
+<!-- ===== PAGE: TRANSFER ===== -->
+<div class="page" id="page-transfer">
+  <div class="section-header" style="margin-top:0">
+    <div class="section-title">🔄 Hromadný převod</div>
+  </div>
+
+  <!-- Admin info or mode buttons for regular users -->
+  <div id="transferModeSection"></div>
+
+  <!-- Step 1: Select target location -->
+  <div class="form-group" id="transferTargetGroup" style="display:none">
+    <label class="form-label" id="transferTargetLabel">Cílová lokace</label>
+    <select class="transfer-select" id="transferTarget" onchange="onTransferTargetChange()"></select>
+  </div>
+
+  <!-- Step 2: Scan items (shown after location selected) -->
+  <div id="transferScanSection" style="display:none">
+    <div class="form-group">
+      <label class="form-label" id="transferScanLabel">2. Skenuj nářadí</label>
+    </div>
+    
+    <!-- Inline scanner for transfer -->
+    <div class="scanner-container" id="transferScannerContainer" style="aspect-ratio:16/9;margin-bottom:10px">
+      <div id="transfer-qr-reader"></div>
+      <div class="scanner-frame">
+        <div class="scanner-frame-inner">
+          <div class="scanner-line"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Manual ID input -->
+    <div style="display:flex;gap:8px;margin-bottom:14px">
+      <input type="number" class="form-input" id="transferManualId" placeholder="Nebo zadej ID ručně" inputmode="numeric">
+      <button class="btn btn-primary" style="width:auto;padding:10px 16px;font-size:0.8rem" onclick="addManualToBatch()">+ Přidat</button>
+    </div>
+
+    <!-- Batch list -->
+    <div class="card" style="padding:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+        <span style="font-weight:600;font-size:0.85rem">Nářadí k převodu</span>
+        <span class="loc-count" id="batchCount">0</span>
+      </div>
+      <div class="batch-list" id="batchList">
+        <div class="empty-state" style="padding:16px"><div class="icon" style="font-size:1.8rem">📦</div><div style="font-size:0.8rem;margin-top:4px">Naskenuj nebo zadej ID nářadí</div></div>
+      </div>
+    </div>
+
+    <!-- Step 3: Execute -->
+    <button class="btn btn-primary" id="batchTransferBtn" onclick="executeBatchTransfer()" style="display:none">✅ Převést vše</button>
+    <button class="btn btn-secondary" onclick="clearBatch()" id="clearBatchBtn" style="display:none">🗑️ Vyprázdnit seznam</button>
+  </div>
+</div>
+
+<!-- ===== PAGE: SEARCH ===== -->
+<div class="page" id="page-search">
+  <div class="search-bar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="searchInput" placeholder="Hledat název, model, ID…" oninput="debounceSearch()">
+  </div>
+  
+  <!-- Filter dropdowns -->
+  <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap">
+    <select class="transfer-select" id="filterLokace" onchange="applyFilters()" style="flex:1;min-width:120px;padding:8px 28px 8px 10px;font-size:0.8rem">
+      <option value="">📍 Dle lokace</option>
+    </select>
+    <select class="transfer-select" id="filterZnacka" onchange="applyFilters()" style="flex:1;min-width:120px;padding:8px 28px 8px 10px;font-size:0.8rem">
+      <option value="">🏷️ Dle značky</option>
+    </select>
+    <select class="transfer-select" id="filterTyp" onchange="applyFilters()" style="flex:1;min-width:120px;padding:8px 28px 8px 10px;font-size:0.8rem">
+      <option value="">🔧 Dle typu</option>
+    </select>
+  </div>
+
+  <!-- Reset button -->
+  <div id="clearFiltersBtn" style="display:none;margin-bottom:12px">
+    <button onclick="clearAllFilters()" style="display:flex;align-items:center;gap:6px;background:var(--red-dim);border:1px solid rgba(229,62,62,0.2);color:var(--red);padding:6px 14px;border-radius:8px;font-family:inherit;font-size:0.78rem;font-weight:600;cursor:pointer">✕ Zrušit filtry</button>
+  </div>
+
+  <!-- Results header with count and view toggle -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+    <span style="font-size:0.8rem;color:var(--text2)" id="catalogCount">Načítám katalog…</span>
+    <div style="display:flex;gap:4px">
+      <button class="view-toggle active" id="viewList" onclick="setViewMode('list')" title="Seznam">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </button>
+      <button class="view-toggle" id="viewGrid" onclick="setViewMode('grid')" title="Karty">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="searchResults">
+    <div class="loading"><div class="spinner"></div>Načítám katalog…</div>
+  </div>
+</div>
+
+<!-- ===== PAGE: HISTORY ===== -->
+<div class="page" id="page-history">
+  <div class="section-header" style="margin-top:0">
+    <div class="section-title">📋 Historie převodů</div>
+  </div>
+  <div id="historyList">
+    <div class="loading"><div class="spinner"></div>Načítám…</div>
+  </div>
+</div>
+
+<!-- ===== DETAIL OVERLAY ===== -->
+<div class="overlay" id="detailOverlay" onclick="if(event.target===this)closeDetail()">
+  <div class="detail-sheet" id="detailSheet">
+    <div class="detail-handle"></div>
+    <div id="detailContent"></div>
+  </div>
+</div>
+
+<!-- BOTTOM NAVIGATION -->
+<nav class="bottom-nav" id="bottomNav" style="display:none">
+  <button class="nav-item active" data-page="search" onclick="showPage('search')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    Hledat
+  </button>
+  <button class="nav-item" data-page="dashboard" onclick="showPage('dashboard')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Přehled
+  </button>
+  <button class="nav-item scan-btn" data-page="scanner" onclick="showPage('scanner')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3"/><line x1="4" y1="12" x2="20" y2="12"/></svg>
+    Převod
+  </button>
+  <button class="nav-item" data-page="transfer" onclick="showPage('transfer')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 014-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+    Hromadně
+  </button>
+  <button class="nav-item" data-page="history" onclick="showPage('history')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Historie
+  </button>
+</nav>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+// Auto-detect API URL — works both from Apps Script hosting and local file
+const API_URL = (function() {
+  // When hosted on Apps Script, use the same base URL
+  const scriptUrl = 'https://script.google.com/macros/s/AKfycbwIxOcMlw6IaMDGVHFrv9S5G5o1GL64WxfIHoipJrO3AQLxXp5R1WQvDVTwzTFOWvMp/exec';
+  return scriptUrl;
+})();
+
+let currentUser = null;
+let scanner = null;
+let batchItems = [];
+let lokaceData = [];
+let dashboardData = null;
+let searchTimeout = null;
+
+// ============================================================
+// API CALLS
+// ============================================================
+async function apiGet(action, params = {}) {
+  let url = API_URL + '?action=' + encodeURIComponent(action);
+  for (const [k, v] of Object.entries(params)) {
+    if (v !== undefined && v !== null && v !== '') {
+      url += '&' + encodeURIComponent(k) + '=' + encodeURIComponent(v);
+    }
+  }
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch(e) { console.error('JSON parse error:', text.substring(0, 200)); return { success: false, error: 'Neplatná odpověď serveru.' }; }
+  } catch (e) {
+    console.error('API Error:', e);
+    return { success: false, error: 'Chyba spojení: ' + e.message };
+  }
+}
+
+async function apiPost(action, body) {
+  try {
+    // Google Apps Script doPost needs the action in the URL or body
+    const url = API_URL + '?action=' + encodeURIComponent(action);
+    const res = await fetch(url, {
+      method: 'POST',
+      redirect: 'follow',
+      body: JSON.stringify({ action, ...body }),
+    });
+    const text = await res.text();
+    try { return JSON.parse(text); }
+    catch(e) { console.error('JSON parse error:', text.substring(0, 200)); return { success: false, error: 'Neplatná odpověď serveru.' }; }
+  } catch (e) {
+    console.error('API POST Error:', e);
+    return { success: false, error: 'Chyba spojení: ' + e.message };
+  }
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+let pinValue = '';
+
+document.getElementById('pinPad').addEventListener('click', (e) => {
+  const key = e.target.closest('.pin-key');
+  if (!key) return;
+  const val = key.dataset.val;
+
+  if (val === 'back') {
+    pinValue = pinValue.slice(0, -1);
+  } else if (pinValue.length < 4) {
+    pinValue += val;
+  }
+
+  updatePinDots();
+  if (pinValue.length === 4) attemptLogin();
+});
+
+function updatePinDots() {
+  const dots = document.querySelectorAll('#pinDots .pin-dot');
+  dots.forEach((d, i) => {
+    d.className = 'pin-dot' + (i < pinValue.length ? ' filled' : '');
+  });
+}
+
+async function attemptLogin() {
+  // Show loading spinner on login screen
+  const loginSub = document.querySelector('.login-sub');
+  const origText = loginSub.textContent;
+  loginSub.innerHTML = '<div class="spinner" style="margin:0 auto 8px;width:28px;height:28px"></div>Přihlašuji…';
+  // Disable pin pad during login
+  document.getElementById('pinPad').style.pointerEvents = 'none';
+  document.getElementById('pinPad').style.opacity = '0.4';
+
+  const result = await apiGet('loginPin', { pin: pinValue });
+  if (result.success) {
+    currentUser = result.uzivatel;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('topbar').style.display = '';
+    document.getElementById('bottomNav').style.display = '';
+    document.getElementById('topbarUserName').textContent = currentUser.jmeno;
+    document.getElementById('topbarUserRole').textContent = formatRole(currentUser.rola);
+    showPage('search');
+    loadDashboard();
+    loadLokace();
+    loadCatalog();
+  } else {
+    // Restore login screen
+    loginSub.textContent = origText;
+    document.getElementById('pinPad').style.pointerEvents = '';
+    document.getElementById('pinPad').style.opacity = '';
+    const dots = document.querySelectorAll('#pinDots .pin-dot');
+    dots.forEach(d => d.className = 'pin-dot error');
+    setTimeout(() => {
+      pinValue = '';
+      updatePinDots();
+    }, 800);
+    showToast(result.error || 'Neplatný PIN', true);
+  }
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+  const page = document.getElementById('page-' + name);
+  if (page) page.classList.add('active');
+
+  const nav = document.querySelector(`.nav-item[data-page="${name}"]`);
+  if (nav) nav.classList.add('active');
+
+  // Stop scanner when leaving scanner page
+  if (name !== 'scanner' && scanner) {
+    try { scanner.stop(); } catch(e) {}
+  }
+
+  // Stop transfer scanner when leaving transfer page
+  if (name !== 'transfer') {
+    stopTransferScanner();
+  }
+
+  // Start scanner when entering scanner page
+  if (name === 'scanner') startScanner();
+
+  // Load data
+  if (name === 'history') loadHistory();
+  if (name === 'search' && !filtersData) loadCatalog();
+  if (name === 'transfer') loadTransferForm();
+}
+
+// ============================================================
+// DASHBOARD
+// ============================================================
+async function loadDashboard() {
+  const data = await apiGet('dashboard');
+  if (!data.success) {
+    document.getElementById('lokaceList').innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><div style="font-size:0.8rem;color:var(--red)">${data.error || 'Nepodařilo se načíst data'}</div></div>`;
+    console.error('Dashboard error:', data);
+    return;
+  }
+  dashboardData = data;
+
+  document.getElementById('statTotal').textContent = data.celkem_naradi.toLocaleString('cs-CZ');
+  document.getElementById('statValue').textContent =
+    (data.celkova_hodnota / 1000000).toFixed(1).replace('.', ',') + ' M Kč';
+
+  const container = document.getElementById('lokaceList');
+  if (data.lokace_stats.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📍</div><div>Žádné lokace</div></div>';
+    return;
+  }
+
+  container.innerHTML = data.lokace_stats.map(lok => {
+    const icon = lok.id.includes('Sklad') || lok.id.includes('sklad') || lok.id.includes('Garaž')
+      ? '<div class="loc-icon sklad">🏭</div>'
+      : lok.id.includes('tranzit') || lok.id.includes('Tranzit')
+      ? '<div class="loc-icon tranzit">🚛</div>'
+      : '<div class="loc-icon stavba">🏗️</div>';
+
+    return `<div class="loc-item" onclick="filterByLokace('${lok.id}')">
+      ${icon}
+      <div class="loc-info">
+        <div class="loc-name">${escHtml(lok.id)}</div>
+        <div class="loc-meta">${(lok.hodnota/1000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} tis. Kč</div>
+      </div>
+      <div class="loc-count">${lok.pocet}</div>
+    </div>`;
+  }).join('');
+
+  // Recent transfers
+  const tc = document.getElementById('recentTransfers');
+  if (data.posledni_prevody && data.posledni_prevody.length > 0) {
+    console.log('Dashboard prevody:', JSON.stringify(data.posledni_prevody.slice(0, 2)));
+    tc.innerHTML = data.posledni_prevody.slice(0, 5).map(p => renderHistoryItem(p)).join('');
+  }
+}
+
+function filterByLokace(lokace) {
+  showPage('search');
+  document.getElementById('searchInput').value = '';
+  searchByLokace(lokace);
+}
+
+async function searchByLokace(lokace) {
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Hledám…</div>';
+  const data = await apiGet('getNaradi', { lokace: lokace, limit: 100 });
+  if (data.success) {
+    renderSearchResults(data.items, `${lokace} (${data.total} ks)`);
+  }
+}
+
+// ============================================================
+// LOKACE
+// ============================================================
+async function loadLokace() {
+  const data = await apiGet('getLokace');
+  if (data.success) lokaceData = data.lokace;
+}
+
+// ============================================================
+// SCANNER
+// ============================================================
+async function startScanner() {
+  const container = document.getElementById('qr-reader');
+  container.innerHTML = '';
+
+  if (scanner) {
+    try { await scanner.stop(); } catch(e) {}
+  }
+
+  const scanFormats = [
+    Html5QrcodeSupportedFormats.QR_CODE,
+    Html5QrcodeSupportedFormats.CODE_128,
+    Html5QrcodeSupportedFormats.EAN_13,
+    Html5QrcodeSupportedFormats.EAN_8,
+    Html5QrcodeSupportedFormats.CODE_39,
+    Html5QrcodeSupportedFormats.CODE_93,
+    Html5QrcodeSupportedFormats.ITF,
+    Html5QrcodeSupportedFormats.CODABAR,
+  ];
+
+  scanner = new Html5Qrcode('qr-reader', { formatsToSupport: scanFormats });
+
+  try {
+    await scanner.start(
+      { facingMode: 'environment' },
+      {
+        fps: 10,
+        qrbox: (w, h) => ({ width: Math.floor(w * 0.75), height: Math.floor(h * 0.35) }),
+      },
+      onScanSuccess,
+      () => {}
+    );
+  } catch (err) {
+    console.error('Scanner error:', err);
+    document.getElementById('scanResult').innerHTML =
+      `<div class="card" style="border-color:var(--red)"><p style="color:var(--red);font-size:0.85rem">⚠️ Kamera není dostupná. Použijte ruční zadání ID.</p></div>`;
+  }
+}
+
+let lastScanTime = 0;
+async function onScanSuccess(code) {
+  const now = Date.now();
+  if (now - lastScanTime < 2000) return; // debounce
+  lastScanTime = now;
+
+  // Vibrate
+  if (navigator.vibrate) navigator.vibrate(100);
+
+  showScannedResult(code);
+}
+
+async function showScannedResult(code) {
+  const container = document.getElementById('scanResult');
+  container.innerHTML = '';
+
+  // Show loading overlay immediately
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:60px 20px">
+      <div class="spinner" style="margin:0 auto 12px"></div>
+      <div style="color:var(--text2);font-size:0.85rem">Hledám kód ${escHtml(code)}…</div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('active');
+  if (scanner) { try { scanner.pause(true); } catch(e) {} }
+
+  const data = await apiGet('scanCode', { code: code });
+  if (data.success) {
+    showDetail(data.item);
+  } else {
+    document.getElementById('detailOverlay').classList.remove('active');
+    if (scanner) { try { scanner.resume(); } catch(e) {} }
+    container.innerHTML = `<div class="card" style="border-color:var(--red)">
+      <p style="color:var(--red);font-weight:600">Nenalezeno: ${escHtml(code)}</p>
+      <p style="color:var(--text2);font-size:0.8rem;margin-top:4px">${data.error || ''}</p>
+    </div>`;
+  }
+}
+
+function manualSearch() {
+  const id = document.getElementById('manualId').value.trim();
+  if (!id) return;
+  showScannedResult(id);
+}
+
+// ============================================================
+// DETAIL OVERLAY
+// ============================================================
+function showDetail(item) {
+  const container = document.getElementById('detailContent');
+
+  // Build photo gallery from thumbnails
+  let fotos = '';
+  const thumbs = item.foto_thumbnails || [];
+  const origUrls = item.foto_urls || [];
+  
+  if (thumbs.length > 0) {
+    fotos = `<div style="display:flex;gap:8px;overflow-x:auto;margin-bottom:14px;padding-bottom:4px;scrollbar-width:none">
+      ${thumbs.map((thumb, i) => `
+        <a href="${origUrls[i] || thumb}" target="_blank" style="flex-shrink:0">
+          <img src="${thumb}" 
+            style="width:120px;height:90px;object-fit:cover;border-radius:10px;border:1px solid var(--border);background:var(--surface2)"
+            onerror="this.style.display='none'"
+            alt="Foto ${i+1}">
+        </a>
+      `).join('')}
+    </div>`;
+  } else if (origUrls.length > 0) {
+    // Fallback: show links if thumbnails not available
+    fotos = `<div style="margin-bottom:12px">${origUrls.map((url, i) => 
+      `<a href="${url}" target="_blank" style="color:var(--amber);font-size:0.85rem;font-weight:600;margin-right:12px">📸 Fotka ${i+1}</a>`
+    ).join('')}</div>`;
+  }
+
+  const prevody = item.posledni_prevody && item.posledni_prevody.length > 0
+    ? `<div style="margin-top:16px"><div style="font-weight:700;font-size:0.85rem;margin-bottom:8px">Poslední převody</div>
+       ${item.posledni_prevody.map(p => renderHistoryItem(p, true)).join('')}</div>`
+    : '';
+
+  container.innerHTML = `
+    <div class="detail-id">#${item.id}</div>
+    <div class="detail-name">${escHtml(item.nazev)}</div>
+    <div class="detail-brand">
+      ${escHtml(item.znacka)} · ${escHtml(item.model)}
+      ${item.interni_nazev ? `<span style="display:inline-block;margin-left:8px;font-size:0.75rem;font-weight:600;padding:2px 8px;border-radius:6px;background:var(--brand-blue-light);color:var(--brand-blue)">${escHtml(item.interni_nazev)}</span>` : ''}
+    </div>
+    ${fotos}
+    <div class="detail-grid">
+      <div class="detail-cell">
+        <div class="detail-cell-label">Lokace</div>
+        <div class="detail-cell-value loc">${escHtml(item.lokace)}</div>
+      </div>
+      <div class="detail-cell">
+        <div class="detail-cell-label">Typ nářadí, majetku</div>
+        <div class="detail-cell-value">${escHtml(item.interni_nazev) || escHtml(item.typ_majetku) || '—'}</div>
+      </div>
+      <div class="detail-cell">
+        <div class="detail-cell-label">Sériové číslo</div>
+        <div class="detail-cell-value">${escHtml(item.seriove_cislo) || '—'}</div>
+      </div>
+      <div class="detail-cell">
+        <div class="detail-cell-label">Cena</div>
+        <div class="detail-cell-value price">${Number(item.cena).toLocaleString('cs-CZ')} Kč</div>
+      </div>
+    </div>
+    ${buildTransferButtons(item)}
+    <button class="btn btn-secondary" onclick="closeDetail()">Zavřít</button>
+    ${prevody}
+  `;
+
+  document.getElementById('detailOverlay').classList.add('active');
+  // Pause scanner while detail is open
+  if (scanner) { try { scanner.pause(true); } catch(e) { try { scanner.stop(); } catch(e2) {} } }
+}
+
+function buildTransferButtons(item) {
+  const userIsAdmin = isAdmin();
+  const itemInTransit = isInTransit(item.lokace);
+
+  if (userIsAdmin) {
+    // Admin: full transfer with location picker
+    return `<button class="btn btn-primary" onclick="startSingleTransfer(${item.id})">🔄 Převést na jinou lokaci</button>`;
+  } else if (itemInTransit) {
+    // Item in transit → inline naskladnit form right here
+    let allLokace = [];
+    if (lokaceData && lokaceData.length > 0) {
+      allLokace = lokaceData.filter(l => l.aktivni && !isInTransit(l.id));
+    } else if (dashboardData && dashboardData.lokace_stats) {
+      allLokace = dashboardData.lokace_stats
+        .filter(l => !isInTransit(l.id))
+        .map(l => ({ id: l.id, nazev: l.id }));
+    }
+    const opts = allLokace.map(l => `<option value="${l.id}">${l.nazev || l.id}</option>`).join('');
+
+    return `
+      <div style="background:var(--green-dim);border-radius:10px;padding:12px 14px;margin-bottom:12px">
+        <div style="font-weight:700;font-size:0.82rem;color:var(--green);margin-bottom:8px">📥 Nářadí je v tranzitu — kam naskladnit?</div>
+        <select class="transfer-select" id="inlineNaskladnitTarget" style="margin-bottom:8px">${opts}</select>
+      </div>
+      <button class="btn btn-primary" onclick="executeInlineNaskladnit(${item.id})" style="background:linear-gradient(135deg, var(--green), #2f9e5a)">✅ Naskladnit</button>`;
+  } else {
+    // Item at location → one-click vyskladnit to transit
+    return `<button class="btn btn-primary" onclick="quickTransitTransfer(${item.id})">📤 Vyskladnit do Tranzitu</button>`;
+  }
+}
+
+async function executeInlineNaskladnit(id) {
+  const targetEl = document.getElementById('inlineNaskladnitTarget');
+  if (!targetEl || !targetEl.value) {
+    showToast('Vyber cílovou lokaci', true);
+    return;
+  }
+  const target = targetEl.value;
+
+  // Disable buttons
+  const btns = document.querySelectorAll('#detailContent .btn');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+
+  // Show loading
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div class="spinner" style="margin:0 auto 16px"></div>
+      <div style="font-weight:600">Naskladňuji…</div>
+    </div>
+  `;
+
+  let gps = {};
+  try {
+    const pos = await getGPS();
+    gps = { gps_lat: pos.lat, gps_lon: pos.lon };
+  } catch(e) {}
+
+  const result = await apiPost('prevod', {
+    id_naradi: id,
+    na_lokaci: target,
+    prevedl: currentUser ? currentUser.jmeno : 'Neznámý',
+    poznamka: 'Naskladnění z tranzitu',
+    ...gps,
+  });
+
+  if (result.success) {
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">📥</div>
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Naskladněno</div>
+        <div style="color:var(--text2);font-size:0.9rem;margin-bottom:24px">Nářadí #${id} naskladněno</div>
+        <div style="background:var(--surface2);border-radius:12px;padding:16px;text-align:left;margin-bottom:24px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span style="color:var(--text2);font-size:0.8rem">Z tranzitu</span>
+            <span style="font-weight:600;font-size:0.85rem">${escHtml(result.z_lokace)}</span>
+          </div>
+          <div style="text-align:center;color:var(--green);font-size:1.2rem;margin-bottom:10px">↓</div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--text2);font-size:0.8rem">Na lokaci</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--green)">${escHtml(result.na_lokaci)}</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="closeDetail(); showPage('dashboard');">🏠 Zpět na přehled</button>
+        <button class="btn btn-secondary" onclick="closeDetail();">📷 Skenovat další</button>
+      </div>
+    `;
+    loadDashboard();
+  } else {
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">⚠️</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--red);margin-bottom:8px">Chyba</div>
+        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:24px">${escHtml(result.error || 'Nepodařilo se naskladnit')}</div>
+        <button class="btn btn-primary" onclick="closeDetail();">Zavřít</button>
+      </div>
+    `;
+  }
+}
+
+async function quickTransitTransfer(id) {
+  // One-click transfer to transit — no intermediate screen
+  const btns = document.querySelectorAll('#detailContent .btn');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+
+  // Show loading
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div class="spinner" style="margin:0 auto 16px"></div>
+      <div style="font-weight:600">Vyskladňuji do Tranzitu…</div>
+    </div>
+  `;
+
+  let gps = {};
+  try {
+    const pos = await getGPS();
+    gps = { gps_lat: pos.lat, gps_lon: pos.lon };
+  } catch(e) {}
+
+  const result = await apiPost('prevod', {
+    id_naradi: id,
+    na_lokaci: TRANZIT_ID,
+    prevedl: currentUser ? currentUser.jmeno : 'Neznámý',
+    poznamka: 'Vyskladnění do tranzitu',
+    ...gps,
+  });
+
+  if (result.success) {
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">📤</div>
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Vyskladněno</div>
+        <div style="color:var(--text2);font-size:0.9rem;margin-bottom:24px">Nářadí #${id} je nyní v Tranzitu</div>
+        <div style="background:var(--surface2);border-radius:12px;padding:16px;text-align:left;margin-bottom:24px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span style="color:var(--text2);font-size:0.8rem">Z lokace</span>
+            <span style="font-weight:600;font-size:0.85rem">${escHtml(result.z_lokace)}</span>
+          </div>
+          <div style="text-align:center;color:var(--brand-blue);font-size:1.2rem;margin-bottom:10px">↓</div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--text2);font-size:0.8rem">V tranzitu</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--brand-blue)">${escHtml(result.na_lokaci)}</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="closeDetail(); showPage('dashboard');">🏠 Zpět na přehled</button>
+        <button class="btn btn-secondary" onclick="closeDetail();">📷 Skenovat další</button>
+      </div>
+    `;
+    loadDashboard();
+  } else {
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">⚠️</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--red);margin-bottom:8px">Chyba</div>
+        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:24px">${escHtml(result.error || 'Nepodařilo se vyskladnit')}</div>
+        <button class="btn btn-primary" onclick="closeDetail();">Zavřít</button>
+      </div>
+    `;
+  }
+}
+
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('active');
+  // Resume scanner if we're on scanner page
+  const scannerPage = document.getElementById('page-scanner');
+  if (scannerPage && scannerPage.classList.contains('active')) {
+    if (scanner) { try { scanner.resume(); } catch(e) { startScanner(); } }
+  }
+}
+
+// Single transfer from detail
+const TRANZIT_ID = 'V tranzitu mezi sklady'; // Must match exactly the value in Sheet column M
+
+function isAdmin() {
+  return currentUser && currentUser.rola === 'admin';
+}
+
+function isInTransit(lokace) {
+  return String(lokace).trim() === TRANZIT_ID;
+}
+
+async function startSingleTransfer(id) {
+  // Show loading in overlay
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:60px 20px">
+      <div class="spinner" style="margin:0 auto 12px"></div>
+      <div style="color:var(--text2);font-size:0.85rem">Připravuji převod…</div>
+    </div>`;
+
+  const data = await apiGet('getNaradiById', { id: id });
+  if (!data.success) { showToast(data.error, true); return; }
+
+  const item = data.item;
+  const itemInTransit = isInTransit(item.lokace);
+  const userIsAdmin = isAdmin();
+  
+  // Get available locations
+  let allLokace = [];
+  if (lokaceData && lokaceData.length > 0) {
+    allLokace = lokaceData.filter(l => l.aktivni && l.id !== item.lokace);
+  } else if (dashboardData && dashboardData.lokace_stats) {
+    allLokace = dashboardData.lokace_stats
+      .filter(l => l.id !== item.lokace)
+      .map(l => ({ id: l.id, nazev: l.id }));
+  }
+
+  // Apply transit rules
+  let options = [];
+  let autoTransit = false;
+  let infoMessage = '';
+
+  if (userIsAdmin) {
+    // Admin: all locations available
+    options = allLokace;
+    infoMessage = '<div style="font-size:0.72rem;color:var(--text3);margin-bottom:12px">👑 Admin režim — lze převést přímo na libovolnou lokaci</div>';
+  } else if (itemInTransit) {
+    // Item is in transit → can go to any location EXCEPT transit
+    options = allLokace.filter(l => !isInTransit(l.id));
+    infoMessage = '<div style="font-size:0.78rem;color:var(--green);margin-bottom:12px;font-weight:500">📥 Naskladnění z tranzitu — vyber cílovou lokaci</div>';
+  } else {
+    // Item is at a location → must go to transit
+    autoTransit = true;
+    infoMessage = `<div style="font-size:0.78rem;color:var(--brand-blue);margin-bottom:12px;font-weight:500">📤 Vyskladnění → nářadí bude přesunuto do Tranzitu</div>`;
+  }
+
+  if (!autoTransit && options.length === 0) {
+    showToast('Žádné dostupné lokace pro převod.', true);
+    return;
+  }
+
+  let formHtml = '';
+  if (autoTransit) {
+    // No dropdown needed — auto transit
+    formHtml = `
+      <input type="hidden" id="singleTransferTarget" value="${TRANZIT_ID}">
+      <div style="background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:12px">
+        <div style="font-size:0.72rem;color:var(--text3);margin-bottom:2px">Cílová lokace</div>
+        <div style="font-weight:700;font-size:0.9rem">${TRANZIT_ID}</div>
+      </div>
+    `;
+  } else {
+    const sel = options.map(l => `<option value="${l.id}">${l.nazev || l.id}</option>`).join('');
+    formHtml = `
+      <div class="form-group">
+        <label class="form-label">Převést na lokaci</label>
+        <select class="transfer-select" id="singleTransferTarget">${sel}</select>
+      </div>
+    `;
+  }
+
+  document.getElementById('detailContent').innerHTML = `
+    <div class="detail-id">#${item.id}</div>
+    <div class="detail-name">${escHtml(item.nazev)}</div>
+    <div class="detail-brand">Z: <strong style="color:var(--brand-blue)">${escHtml(item.lokace)}</strong></div>
+    ${infoMessage}
+    ${formHtml}
+    <div class="form-group">
+      <label class="form-label">Poznámka (volitelné)</label>
+      <input type="text" class="form-input" id="singleTransferNote" placeholder="Důvod převodu…">
+    </div>
+    <button class="btn btn-primary" onclick="executeSingleTransfer(${item.id})">${autoTransit ? '📤 Vyskladnit do Tranzitu' : '✅ Potvrdit převod'}</button>
+    <button class="btn btn-secondary" onclick="closeDetail()">Zrušit</button>
+  `;
+}
+
+async function executeSingleTransfer(id) {
+  const targetEl = document.getElementById('singleTransferTarget');
+  const noteEl = document.getElementById('singleTransferNote');
+  
+  if (!targetEl || !targetEl.value) {
+    showToast('Vyber cílovou lokaci', true);
+    return;
+  }
+  
+  const target = targetEl.value;
+  const targetLabel = targetEl.options ? targetEl.options[targetEl.selectedIndex].text : target;
+  const note = noteEl ? noteEl.value : '';
+
+  // Disable button to prevent double-click
+  const btns = document.querySelectorAll('#detailContent .btn');
+  btns.forEach(b => { b.disabled = true; b.style.opacity = '0.5'; });
+
+  // Show loading state
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:40px 20px">
+      <div class="spinner" style="margin:0 auto 16px"></div>
+      <div style="font-weight:600">Provádím převod…</div>
+    </div>
+  `;
+
+  let gps = {};
+  try {
+    const pos = await getGPS();
+    gps = { gps_lat: pos.lat, gps_lon: pos.lon };
+  } catch(e) {}
+
+  console.log('Sending transfer:', { id_naradi: id, na_lokaci: target, prevedl: currentUser ? currentUser.jmeno : 'Neznámý' });
+
+  const result = await apiPost('prevod', {
+    id_naradi: id,
+    na_lokaci: target,
+    prevedl: currentUser ? currentUser.jmeno : 'Neznámý',
+    poznamka: note,
+    ...gps,
+  });
+
+  console.log('Transfer result:', result);
+
+  if (result.success) {
+    // Show SUCCESS screen inside the overlay
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">✅</div>
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Převod dokončen</div>
+        <div style="color:var(--text2);font-size:0.9rem;margin-bottom:24px">Nářadí #${id} úspěšně převedeno</div>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:left;margin-bottom:24px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span style="color:var(--text2);font-size:0.8rem">Z lokace</span>
+            <span style="font-weight:600;font-size:0.85rem">${escHtml(result.z_lokace)}</span>
+          </div>
+          <div style="text-align:center;color:var(--amber);font-size:1.2rem;margin-bottom:10px">↓</div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+            <span style="color:var(--text2);font-size:0.8rem">Na lokaci</span>
+            <span style="font-weight:600;font-size:0.85rem;color:var(--blue)">${escHtml(result.na_lokaci)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+            <span style="color:var(--text2);font-size:0.8rem">Převedl</span>
+            <span style="font-weight:600;font-size:0.85rem">${escHtml(result.prevedl)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span style="color:var(--text2);font-size:0.8rem">Čas</span>
+            <span style="font-weight:500;font-size:0.8rem;color:var(--text2)">${result.cas || ''}</span>
+          </div>
+        </div>
+        <button class="btn btn-primary" onclick="closeDetail(); showPage('dashboard');">🏠 Zpět na přehled</button>
+        <button class="btn btn-secondary" onclick="closeDetail();">📷 Skenovat další</button>
+      </div>
+    `;
+    // Refresh dashboard in background
+    loadDashboard();
+  } else {
+    // Show ERROR screen inside the overlay
+    document.getElementById('detailContent').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">⚠️</div>
+        <div style="font-size:1.2rem;font-weight:800;color:var(--red);margin-bottom:8px">Chyba převodu</div>
+        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:24px">${escHtml(result.error || 'Nepodařilo se provést převod')}</div>
+        <button class="btn btn-primary" onclick="closeDetail();">Zavřít</button>
+      </div>
+    `;
+  }
+}
+
+// ============================================================
+// BATCH TRANSFER
+// ============================================================
+let batchMode = false;
+let transferScanner = null;
+
+let transferMode = null; // 'vyskladnit' | 'naskladnit' | 'admin'
+
+function loadTransferForm() {
+  const modeSection = document.getElementById('transferModeSection');
+  const targetGroup = document.getElementById('transferTargetGroup');
+  const scanSection = document.getElementById('transferScanSection');
+  
+  // Reset
+  targetGroup.style.display = 'none';
+  scanSection.style.display = 'none';
+  transferMode = null;
+
+  if (isAdmin()) {
+    // Admin: show direct location picker
+    modeSection.innerHTML = '<div style="font-size:0.78rem;color:var(--text3);margin-bottom:12px">👑 Admin režim — přímý převod na libovolnou lokaci</div>';
+    transferMode = 'admin';
+    showTransferTargetDropdown('all');
+  } else {
+    // Regular user: show two mode buttons
+    modeSection.innerHTML = `
+      <div style="display:flex;gap:10px;margin-bottom:16px">
+        <button class="btn btn-primary" style="flex:1;padding:20px 12px;flex-direction:column;gap:4px" onclick="selectTransferMode('vyskladnit')">
+          <span style="font-size:1.5rem">📤</span>
+          <span style="font-weight:700">Vyskladnit</span>
+          <span style="font-size:0.7rem;opacity:0.8">Do tranzitu</span>
+        </button>
+        <button class="btn btn-secondary" style="flex:1;padding:20px 12px;flex-direction:column;gap:4px" onclick="selectTransferMode('naskladnit')">
+          <span style="font-size:1.5rem">📥</span>
+          <span style="font-weight:700">Naskladnit</span>
+          <span style="font-size:0.7rem;opacity:0.7">Z tranzitu</span>
+        </button>
+      </div>
+    `;
+  }
+  renderBatchList();
+}
+
+function selectTransferMode(mode) {
+  transferMode = mode;
+  const modeSection = document.getElementById('transferModeSection');
+
+  if (mode === 'vyskladnit') {
+    // Auto-set target to transit, go straight to scanning
+    modeSection.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;background:var(--brand-blue-light);padding:12px 14px;border-radius:10px;margin-bottom:14px">
+        <span style="font-size:1.3rem">📤</span>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem;color:var(--brand-blue)">Vyskladnění do Tranzitu</div>
+          <div style="font-size:0.72rem;color:var(--text2)">Skenuj nářadí, které bereš s sebou</div>
+        </div>
+        <button onclick="loadTransferForm()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem">✕</button>
+      </div>
+    `;
+    document.getElementById('transferTarget').innerHTML = `<option value="${TRANZIT_ID}">${TRANZIT_ID}</option>`;
+    document.getElementById('transferTarget').value = TRANZIT_ID;
+    document.getElementById('transferTargetGroup').style.display = 'none';
+    document.getElementById('transferScanLabel').textContent = 'Skenuj nářadí k vyskladnění';
+    document.getElementById('transferScanSection').style.display = '';
+    startTransferScanner();
+  } else if (mode === 'naskladnit') {
+    // Show dropdown with all locations EXCEPT transit
+    modeSection.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;background:var(--green-dim);padding:12px 14px;border-radius:10px;margin-bottom:14px">
+        <span style="font-size:1.3rem">📥</span>
+        <div>
+          <div style="font-weight:700;font-size:0.88rem;color:var(--green)">Naskladnění z Tranzitu</div>
+          <div style="font-size:0.72rem;color:var(--text2)">Vyber kam a skenuj co naskladňuješ</div>
+        </div>
+        <button onclick="loadTransferForm()" style="margin-left:auto;background:none;border:none;color:var(--text3);cursor:pointer;font-size:0.8rem">✕</button>
+      </div>
+    `;
+    document.getElementById('transferTargetLabel').textContent = '1. Vyber cílovou lokaci';
+    document.getElementById('transferScanLabel').textContent = '2. Skenuj nářadí k naskladnění';
+    showTransferTargetDropdown('no-transit');
+  }
+}
+
+function showTransferTargetDropdown(mode) {
+  const sel = document.getElementById('transferTarget');
+  let allLokace = [];
+
+  if (lokaceData && lokaceData.length > 0) {
+    allLokace = lokaceData.filter(l => l.aktivni);
+  } else if (dashboardData && dashboardData.lokace_stats) {
+    allLokace = dashboardData.lokace_stats.map(l => ({ id: l.id, nazev: l.id, aktivni: true }));
+  }
+
+  let filtered = allLokace;
+  if (mode === 'no-transit') {
+    filtered = allLokace.filter(l => !isInTransit(l.id));
+  }
+
+  sel.innerHTML = '<option value="">— Vyber lokaci —</option>' +
+    filtered.map(l => `<option value="${l.id}">${l.nazev || l.id}</option>`).join('');
+
+  document.getElementById('transferTargetGroup').style.display = '';
+}
+
+function onTransferTargetChange() {
+  const hasTarget = !!document.getElementById('transferTarget').value;
+  document.getElementById('transferScanSection').style.display = hasTarget ? '' : 'none';
+  if (hasTarget) {
+    startTransferScanner();
+  } else {
+    stopTransferScanner();
+  }
+}
+
+async function startTransferScanner() {
+  const container = document.getElementById('transfer-qr-reader');
+  container.innerHTML = '';
+
+  if (transferScanner) {
+    try { await transferScanner.stop(); } catch(e) {}
+  }
+
+  const transferScanFormats = [
+    Html5QrcodeSupportedFormats.QR_CODE,
+    Html5QrcodeSupportedFormats.CODE_128,
+    Html5QrcodeSupportedFormats.EAN_13,
+    Html5QrcodeSupportedFormats.EAN_8,
+    Html5QrcodeSupportedFormats.CODE_39,
+    Html5QrcodeSupportedFormats.CODE_93,
+    Html5QrcodeSupportedFormats.ITF,
+    Html5QrcodeSupportedFormats.CODABAR,
+  ];
+
+  transferScanner = new Html5Qrcode('transfer-qr-reader', { formatsToSupport: transferScanFormats });
+
+  try {
+    await transferScanner.start(
+      { facingMode: 'environment' },
+      {
+        fps: 10,
+        qrbox: (w, h) => ({ width: Math.floor(w * 0.75), height: Math.floor(h * 0.35) }),
+      },
+      onTransferScanSuccess,
+      () => {}
+    );
+  } catch (err) {
+    console.error('Transfer scanner error:', err);
+  }
+}
+
+function stopTransferScanner() {
+  if (transferScanner) {
+    try { transferScanner.stop(); } catch(e) {}
+    transferScanner = null;
+  }
+}
+
+let lastTransferScanTime = 0;
+async function onTransferScanSuccess(code) {
+  const now = Date.now();
+  if (now - lastTransferScanTime < 2000) return;
+  lastTransferScanTime = now;
+  if (navigator.vibrate) navigator.vibrate(100);
+  await addToBatch(code);
+}
+
+function addManualToBatch() {
+  const input = document.getElementById('transferManualId');
+  const id = input.value.trim();
+  if (!id) return;
+  addToBatch(id);
+  input.value = '';
+}
+
+let batchAddingIds = new Set(); // lock against concurrent adds
+
+async function addToBatch(code) {
+  let cleanId = String(code).trim();
+  if (cleanId.toUpperCase().startsWith('NAR-')) cleanId = cleanId.substring(4);
+
+  // Check duplicate — compare as strings
+  if (batchItems.find(i => String(i.id) === cleanId)) {
+    showToast('Již v seznamu: #' + cleanId, true);
+    return;
+  }
+
+  // Prevent concurrent adds of the same ID (scanner fires fast)
+  if (batchAddingIds.has(cleanId)) return;
+  batchAddingIds.add(cleanId);
+
+  try {
+    const data = await apiGet('scanCode', { code: code });
+    if (!data.success) {
+      showToast('Nenalezeno: ' + code, true);
+      return;
+    }
+
+    // Double-check after async call (another scan could have added it meanwhile)
+    if (batchItems.find(i => String(i.id) === String(data.item.id))) {
+      showToast('Již v seznamu: #' + data.item.id, true);
+      return;
+    }
+
+    // Check if item is already at target location
+    const target = document.getElementById('transferTarget').value;
+    if (data.item.lokace === target) {
+      showToast(`#${data.item.id} je již na lokaci ${target}`, true);
+      return;
+    }
+
+    // Transit validation for non-admin
+    if (!isAdmin()) {
+      if (transferMode === 'vyskladnit' && isInTransit(data.item.lokace)) {
+        showToast(`#${data.item.id} je už v tranzitu — použij Naskladnit`, true);
+        return;
+      }
+      if (transferMode === 'naskladnit' && !isInTransit(data.item.lokace)) {
+        showToast(`#${data.item.id} není v tranzitu — nejdřív vyskladni`, true);
+        return;
+      }
+    }
+
+    batchItems.push(data.item);
+    showToast(`✅ #${data.item.id} ${data.item.nazev}`);
+    renderBatchList();
+  } finally {
+    batchAddingIds.delete(cleanId);
+  }
+}
+
+function removeBatchItem(id) {
+  batchItems = batchItems.filter(i => i.id !== id);
+  renderBatchList();
+}
+
+function clearBatch() {
+  batchItems = [];
+  renderBatchList();
+}
+
+function renderBatchList() {
+  const container = document.getElementById('batchList');
+  document.getElementById('batchCount').textContent = batchItems.length;
+
+  if (batchItems.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:16px"><div class="icon" style="font-size:1.8rem">📦</div><div style="font-size:0.8rem;margin-top:4px">Naskenuj nebo zadej ID nářadí</div></div>';
+    document.getElementById('batchTransferBtn').style.display = 'none';
+    document.getElementById('clearBatchBtn').style.display = 'none';
+    return;
+  }
+
+  container.innerHTML = batchItems.map(item => `
+    <div class="batch-item">
+      <div class="tool-id" style="font-size:0.75rem;padding:4px 8px;min-width:44px">${item.id}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:0.82rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escHtml(item.nazev)}</div>
+        <div style="font-size:0.68rem;color:var(--text2)">${escHtml(item.znacka)} · z: ${escHtml(item.lokace).replace('ZAK_','')}</div>
+      </div>
+      <button class="batch-remove" onclick="removeBatchItem(${item.id})">×</button>
+    </div>
+  `).join('');
+
+  document.getElementById('batchTransferBtn').style.display = '';
+  document.getElementById('clearBatchBtn').style.display = '';
+}
+
+async function executeBatchTransfer() {
+  const target = document.getElementById('transferTarget').value;
+  if (!target) { showToast('Vyber cílovou lokaci', true); return; }
+  if (batchItems.length === 0) { showToast('Žádné nářadí k převodu', true); return; }
+
+  // Stop scanner during transfer
+  stopTransferScanner();
+
+  // Show loading
+  const btn = document.getElementById('batchTransferBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner" style="width:20px;height:20px;margin:0 auto;border-width:2px"></div>';
+
+  let gps = {};
+  try {
+    const pos = await getGPS();
+    gps = { gps_lat: pos.lat, gps_lon: pos.lon };
+  } catch(e) {}
+
+  const ids = batchItems.map(i => i.id);
+  const result = await apiPost('hromadnyPrevod', {
+    id_naradi: ids,
+    na_lokaci: target,
+    prevedl: currentUser ? currentUser.jmeno : 'Neznámý',
+    ...gps,
+  });
+
+  if (result.success) {
+    // Show success in-page
+    const count = result.prevedeno;
+    const errors = result.chyby;
+    document.getElementById('transferScanSection').innerHTML = `
+      <div style="text-align:center;padding:30px 10px">
+        <div style="font-size:3.5rem;margin-bottom:12px">✅</div>
+        <div style="font-size:1.3rem;font-weight:800;margin-bottom:6px">Převod dokončen</div>
+        <div style="color:var(--text2);font-size:0.9rem;margin-bottom:8px">
+          ${count} ks převedeno na <strong>${escHtml(target)}</strong>
+          ${errors > 0 ? `<br><span style="color:var(--red)">${errors} chyb</span>` : ''}
+        </div>
+        <button class="btn btn-primary" onclick="resetTransferPage()" style="margin-top:16px">🔄 Nový převod</button>
+        <button class="btn btn-secondary" onclick="showPage('search')" style="margin-top:8px">🔍 Zpět na katalog</button>
+      </div>
+    `;
+    batchItems = [];
+    loadDashboard();
+  } else {
+    showToast(result.error || 'Chyba při převodu', true);
+    btn.disabled = false;
+    btn.innerHTML = '✅ Převést vše';
+    startTransferScanner();
+  }
+}
+
+function resetTransferPage() {
+  batchItems = [];
+  document.getElementById('transferTarget').value = '';
+  // Rebuild the scan section (it was replaced with success message)
+  showPage('transfer');
+  loadTransferForm();
+}
+
+// Stop transfer scanner when leaving page
+function stopTransferScannerOnLeave() {
+  stopTransferScanner();
+}
+
+// ============================================================
+// SEARCH
+// ============================================================
+// ============================================================
+// CATALOG / SEARCH
+// ============================================================
+let filtersData = null;
+let catalogItems = [];
+let allCatalogItems = []; // full dataset for dynamic filtering
+let viewMode = 'list'; // 'list' or 'grid'
+
+async function loadCatalog() {
+  // Load all items (no filter) to have full dataset for dynamic dropdowns
+  const container = document.getElementById('searchResults');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Načítám katalog…</div>';
+
+  const data = await apiGet('getNaradi', { limit: 999 });
+  if (data.success && data.items) {
+    allCatalogItems = data.items;
+    catalogItems = data.items;
+    populateAllDropdowns(data.items);
+    document.getElementById('catalogCount').textContent = `${data.items.length} položek`;
+    renderCatalog(data.items);
+  } else {
+    container.innerHTML = `<div class="empty-state"><div class="icon">⚠️</div><div>${data.error || 'Chyba'}</div></div>`;
+  }
+}
+
+const sortAbc = (arr) => [...arr].sort((a, b) => a[0].localeCompare(b[0], 'cs'));
+
+function buildOptions(items, field) {
+  const counts = {};
+  for (const item of items) {
+    const val = (item[field] || '').trim();
+    if (val) counts[val] = (counts[val] || 0) + 1;
+  }
+  return sortAbc(Object.entries(counts)).map(([name, count]) =>
+    `<option value="${escHtml(name)}">${escHtml(name)} (${count})</option>`
+  ).join('');
+}
+
+function populateAllDropdowns(items) {
+  document.getElementById('filterTyp').innerHTML = '<option value="">🔧 Dle typu</option>' + buildOptions(items, 'interni_nazev');
+  document.getElementById('filterZnacka').innerHTML = '<option value="">🏷️ Dle značky</option>' + buildOptions(items, 'znacka');
+  document.getElementById('filterLokace').innerHTML = '<option value="">📍 Dle lokace</option>' + buildOptions(items, 'lokace');
+}
+
+function updateDynamicDropdowns(filteredItems) {
+  // Save current selections
+  const curTyp = document.getElementById('filterTyp').value;
+  const curZnacka = document.getElementById('filterZnacka').value;
+  const curLokace = document.getElementById('filterLokace').value;
+
+  // Rebuild each dropdown based on what's available in filtered results,
+  // but keep the currently selected value even if we rebuild
+  const typEl = document.getElementById('filterTyp');
+  const znEl = document.getElementById('filterZnacka');
+  const lokEl = document.getElementById('filterLokace');
+
+  // For each filter, show options from items filtered by OTHER filters (not this one)
+  const itemsForTyp = filterItemsBy(allCatalogItems, '', curZnacka, curLokace);
+  const itemsForZnacka = filterItemsBy(allCatalogItems, curTyp, '', curLokace);
+  const itemsForLokace = filterItemsBy(allCatalogItems, curTyp, curZnacka, '');
+
+  typEl.innerHTML = '<option value="">🔧 Dle typu</option>' + buildOptions(itemsForTyp, 'interni_nazev');
+  znEl.innerHTML = '<option value="">🏷️ Dle značky</option>' + buildOptions(itemsForZnacka, 'znacka');
+  lokEl.innerHTML = '<option value="">📍 Dle lokace</option>' + buildOptions(itemsForLokace, 'lokace');
+
+  // Restore selections
+  typEl.value = curTyp;
+  znEl.value = curZnacka;
+  lokEl.value = curLokace;
+
+  // If a selected value no longer exists in options, reset it
+  if (curTyp && !typEl.value) typEl.value = '';
+  if (curZnacka && !znEl.value) znEl.value = '';
+  if (curLokace && !lokEl.value) lokEl.value = '';
+}
+
+function filterItemsBy(items, typ, znacka, lokace) {
+  return items.filter(item => {
+    if (typ && (item.interni_nazev || '').trim() !== typ) return false;
+    if (znacka && (item.znacka || '').trim() !== znacka) return false;
+    if (lokace && (item.lokace || '').trim() !== lokace) return false;
+    return true;
+  });
+}
+
+function debounceSearch() {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(applyFilters, 300);
+}
+
+function applyFilters() {
+  const search = document.getElementById('searchInput').value.trim().toLowerCase();
+  const typ = document.getElementById('filterTyp').value;
+  const znacka = document.getElementById('filterZnacka').value;
+  const lokace = document.getElementById('filterLokace').value;
+
+  // Highlight active filters
+  document.getElementById('filterTyp').classList.toggle('filter-active', !!typ);
+  document.getElementById('filterZnacka').classList.toggle('filter-active', !!znacka);
+  document.getElementById('filterLokace').classList.toggle('filter-active', !!lokace);
+
+  // Show/hide clear button
+  const hasFilters = search || typ || znacka || lokace;
+  document.getElementById('clearFiltersBtn').style.display = hasFilters ? '' : 'none';
+
+  // Filter locally from allCatalogItems (no API call needed!)
+  let filtered = allCatalogItems.filter(item => {
+    if (typ && (item.interni_nazev || '').trim() !== typ) return false;
+    if (znacka && (item.znacka || '').trim() !== znacka) return false;
+    if (lokace && (item.lokace || '').trim() !== lokace) return false;
+    if (search.length >= 2) {
+      const searchIn = [
+        item.nazev, item.interni_nazev, item.model,
+        item.znacka, item.slouceni, String(item.id), item.seriove_cislo
+      ].join(' ').toLowerCase();
+      if (!searchIn.includes(search)) return false;
+    }
+    return true;
+  });
+
+  catalogItems = filtered;
+  document.getElementById('catalogCount').textContent =
+    `${filtered.length} položek` + (hasFilters ? ' (filtrováno)' : '');
+
+  // Update other dropdowns dynamically
+  updateDynamicDropdowns(filtered);
+
+  renderCatalog(filtered);
+}
+
+function clearAllFilters() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('filterTyp').value = '';
+  document.getElementById('filterZnacka').value = '';
+  document.getElementById('filterLokace').value = '';
+  document.getElementById('clearFiltersBtn').style.display = 'none';
+  document.querySelectorAll('.filter-active').forEach(el => el.classList.remove('filter-active'));
+  populateAllDropdowns(allCatalogItems);
+  catalogItems = allCatalogItems;
+  document.getElementById('catalogCount').textContent = `${allCatalogItems.length} položek`;
+  renderCatalog(allCatalogItems);
+}
+
+function setViewMode(mode) {
+  viewMode = mode;
+  document.getElementById('viewList').classList.toggle('active', mode === 'list');
+  document.getElementById('viewGrid').classList.toggle('active', mode === 'grid');
+  renderCatalog(catalogItems);
+}
+
+function renderCatalog(items) {
+  const container = document.getElementById('searchResults');
+  if (!items || items.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="icon">😔</div><div>Nic nenalezeno</div></div>';
+    return;
+  }
+
+  if (viewMode === 'grid') {
+    container.innerHTML = '<div class="grid-view">' + items.map(item => {
+      const thumb = item.foto_thumbnails && item.foto_thumbnails[0]
+        ? `<img class="grid-card-img" src="${item.foto_thumbnails[0]}" onerror="this.outerHTML='<div class=\\'grid-card-placeholder\\'>🔧</div>'">`
+        : '<div class="grid-card-placeholder">🔧</div>';
+      const typBadge = item.interni_nazev ? `<span style="font-size:0.62rem;font-weight:600;padding:2px 6px;border-radius:4px;background:#f0f2f7;color:var(--brand-gray)">${escHtml(item.interni_nazev)}</span>` : '';
+      return `<div class="grid-card" onclick="openToolDetail(${item.id})">
+        ${thumb}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px">
+          <div class="grid-card-id">#${item.id}</div>
+          ${typBadge}
+        </div>
+        <div class="grid-card-name">${escHtml(item.nazev)}</div>
+        <div class="grid-card-meta">${escHtml(item.znacka)} · ${escHtml(item.model)}</div>
+        <div class="grid-card-bottom">
+          <span class="grid-card-loc">${escHtml(item.lokace).replace('ZAK_','')}</span>
+          <span class="grid-card-price">${Number(item.cena).toLocaleString('cs-CZ')} Kč</span>
+        </div>
+      </div>`;
+    }).join('') + '</div>';
+  } else {
+    container.innerHTML = items.map(item => {
+      const typTag = item.interni_nazev ? `<span class="tool-type-badge">${escHtml(item.interni_nazev)}</span>` : '';
+      const locTag = item.lokace ? `<span class="tool-loc">${escHtml(item.lokace).replace('ZAK_','')}</span>` : '';
+      return `
+      <div class="tool-item" onclick="openToolDetail(${item.id})">
+        <div class="tool-id">${item.id}</div>
+        <div class="tool-info">
+          <div class="tool-name">${escHtml(item.nazev)}</div>
+          <div class="tool-meta">
+            <span>${escHtml(item.znacka)} · ${escHtml(item.model)}</span>
+            ${typTag}${locTag}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// Keep old function name for compatibility
+function renderSearchResults(items, label) { renderCatalog(items); }
+function loadSearchFilters() { /* replaced by loadCatalog */ }
+
+async function openToolDetail(id) {
+  // Show loading overlay immediately
+  document.getElementById('detailContent').innerHTML = `
+    <div style="text-align:center;padding:60px 20px">
+      <div class="spinner" style="margin:0 auto 12px"></div>
+      <div style="color:var(--text2);font-size:0.85rem">Načítám detail #${id}…</div>
+    </div>`;
+  document.getElementById('detailOverlay').classList.add('active');
+
+  const data = await apiGet('getNaradiById', { id: id });
+  if (data.success) showDetail(data.item);
+  else {
+    document.getElementById('detailOverlay').classList.remove('active');
+    showToast(data.error, true);
+  }
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+async function loadHistory() {
+  const container = document.getElementById('historyList');
+  container.innerHTML = '<div class="loading"><div class="spinner"></div>Načítám…</div>';
+
+  const data = await apiGet('getHistorie', { limit: 50 });
+  console.log('Historie data:', JSON.stringify(data.prevody && data.prevody[1] ? { id: data.prevody[1].id_naradi, nazev: data.prevody[1].nazev_naradi } : 'no data'));
+  if (data.success && data.prevody && data.prevody.length > 0) {
+    container.innerHTML = data.prevody.map(p => renderHistoryItem(p, false)).join('');
+  } else {
+    container.innerHTML = '<div class="empty-state"><div class="icon">📋</div><div>Zatím žádné převody</div></div>';
+  }
+}
+
+function formatDate(dateStr) {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr);
+    if (isNaN(d)) return String(dateStr);
+    return d.toLocaleDateString('cs-CZ', { day:'numeric', month:'numeric', year:'numeric' })
+      + ' ' + d.toLocaleTimeString('cs-CZ', { hour:'2-digit', minute:'2-digit' });
+  } catch(e) { return String(dateStr); }
+}
+
+function renderHistoryItem(p, compact) {
+  const nazev = p.nazev_naradi || '';
+  const znacka = p.znacka_naradi || '';
+  const model = p.model_naradi || '';
+  const toolLabel = nazev || 'Nářadí #' + (p.id_naradi || '?');
+  const toolMeta = [znacka, model].filter(Boolean).join(' · ');
+  const hasId = p.id_naradi && p.id_naradi !== 0;
+
+  if (compact) {
+    // Compact version for detail overlay — no tool name, just transfer info
+    return `<div class="history-item">
+      <div style="flex-shrink:0;width:28px;display:flex;flex-direction:column;align-items:center;padding-top:6px">
+        <div class="history-dot" style="width:8px;height:8px;border-radius:50%;background:var(--brand-blue)"></div>
+      </div>
+      <div class="history-content" style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;font-size:0.82rem;margin-bottom:2px">
+          <span style="color:var(--brand-gray)">${escHtml(p.z_lokace || '?')}</span>
+          <span style="color:var(--brand-blue);font-weight:700">→</span>
+          <span style="color:var(--brand-blue);font-weight:600">${escHtml(p.na_lokaci || '?')}</span>
+        </div>
+        <div style="font-size:0.68rem;color:var(--text3)">
+          ${escHtml(p.prevedl || '')} · ${formatDate(p.datum_cas)}${p.poznamka ? ' · ' + escHtml(p.poznamka) : ''}
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Full version for History page and Dashboard — always show full detail
+  return `<div class="history-item" style="cursor:pointer" ${hasId ? `onclick="openToolDetail(${p.id_naradi})"` : ''}>
+    <div style="flex-shrink:0;width:44px;display:flex;flex-direction:column;align-items:center;gap:2px;padding-top:2px">
+      <div style="width:36px;height:36px;border-radius:8px;background:var(--brand-blue-light);display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.7rem;color:var(--brand-blue)">${hasId ? p.id_naradi : '?'}</div>
+    </div>
+    <div class="history-content" style="flex:1;min-width:0">
+      <div style="font-weight:700;font-size:0.88rem;margin-bottom:1px">${escHtml(toolLabel)}</div>
+      ${toolMeta ? `<div style="font-size:0.72rem;color:var(--text2);margin-bottom:4px">${escHtml(toolMeta)}</div>` : ''}
+      <div style="display:flex;align-items:center;gap:6px;font-size:0.78rem;margin-bottom:3px">
+        <span style="color:var(--brand-gray)">${escHtml(p.z_lokace || '?')}</span>
+        <span style="color:var(--brand-blue);font-weight:700">→</span>
+        <span style="color:var(--brand-blue);font-weight:600">${escHtml(p.na_lokaci || '?')}</span>
+      </div>
+      <div style="font-size:0.68rem;color:var(--text3)">
+        ${escHtml(p.prevedl || '')} · ${formatDate(p.datum_cas)}${p.poznamka ? ' · ' + escHtml(p.poznamka) : ''}
+      </div>
+    </div>
+  </div>`;
+}
+
+// ============================================================
+// GPS
+// ============================================================
+function getGPS() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) { reject('No GPS'); return; }
+    navigator.geolocation.getCurrentPosition(
+      pos => resolve({ lat: pos.coords.latitude, lon: pos.coords.longitude }),
+      err => reject(err),
+      { timeout: 5000, maximumAge: 60000 }
+    );
+  });
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function formatRole(rola) {
+  const roles = {
+    'admin': 'Admin',
+    'stavbyvedouci': 'Stavbyvedoucí',
+    'skladnik': 'Skladník',
+  };
+  return roles[rola] || rola || '';
+}
+
+function escHtml(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = String(s);
+  return d.innerHTML;
+}
+
+// ============================================================
+// PRODUCTION: PIN login enabled
+// ============================================================
+// Login screen is shown by default — user must enter PIN
+</script>
+
+</body>
+</html>
