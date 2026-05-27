@@ -2155,6 +2155,11 @@ function escHtml(s) {
 // PRODUCTION: PIN login enabled
 // ============================================================
 // Login screen is shown by default — user must enter PIN
+
+// Register Service Worker for PWA install prompt
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
 </script>
 
 </body>
